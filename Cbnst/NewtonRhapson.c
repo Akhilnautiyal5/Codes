@@ -1,26 +1,57 @@
 #include<stdio.h>
 #include<math.h>
-float function(float x){
-    return  x*log10(x) - 1.2;
+
+// Define the function f(x)
+float f(float x) {
+    return (x * x * x - 4 * x - 9);  // Example function: f(x) = x^3 - 4x - 9
 }
-float derivativeFunction(float x) {
-    return  log10(x) + 0.43429;
+
+// Define the derivative f'(x)
+float f_prime(float x) {
+    return (3 * x * x - 4);  // Derivative of f(x): f'(x) = 3x^2 - 4
 }
+
+// Newton-Raphson iteration function
+float newton_raphson(float x, int *itr) {
+    float x_next = x - f(x) / f_prime(x);  // Apply the Newton-Raphson formula
+    (*itr)++;  // Increment the iteration counter
+    printf("At iteration %d, value of x is: %f\n", *itr, x_next);
+    return x_next;
+}
+
 int main() {
-    int itr, maxitr;
-    float x0, x1, allerr, h; // h = f(x)/f'(x);
-    printf("\nEnter x0, allowed error and maximum iterations: ");
-    scanf("%f%f%d", &x0, &allerr, &maxitr);
+    float x0, x1, allowed_error;
+    int max_itr, itr = 0;
+
+    // Get input from the user
+    printf("Enter the initial guess: \n");
+    scanf("%f", &x0);
+
+    printf("Enter allowed error: \n");
+    scanf("%f", &allowed_error);
+
+    printf("Enter the maximum number of iterations: \n");
+    scanf("%d", &max_itr);
+
+    // Perform the first iteration
+    x1 = newton_raphson(x0, &itr);
+
+    // Newton-Raphson loop
     do {
-        h = function(x0) / derivativeFunction(x0);
-        x1 = x0 - h;
-        printf("At Iteration no. %d, x = %f\n", itr, x1);
-        if (fabs(h) < allerr){
-            printf("After %d iterations, root = %f\n", itr, x1);
+        x0 = x1;  // Update x0 with the latest value
+        x1 = newton_raphson(x0, &itr);  // Perform the next iteration
+
+        // Check if the error is within the allowed tolerance
+        if (fabs(x1 - x0) < allowed_error) {
+            printf("\nRoot found after %d iterations\n", itr);
+            printf("Root = %f\n", x1);
+            printf("Function value at root = %f\n", f(x1));
             return 0;
         }
-        x0 = x1;
-        itr++;
-    } while (itr <= maxitr);
-    printf(" The required solution does not converge or iterations are insufficient\n");
+
+    } while (itr < max_itr);
+
+    // If maximum iterations reached
+    printf("Max iterations reached!\n");
+    return 0;
 }
