@@ -6,10 +6,12 @@ float g(float x) {
     return cbrt(4 * x + 9);  // g(x) = ∛(4x + 9)
 }
 
+// Function f(x) = x^3 - 4x - 9
 float f(float x) {
     return (x * x * x - 4 * x - 9);  // Original function
 }
 
+// Fixed-point iteration step
 float fixed_point_iteration(float x, int *itr) {
     float x_next = g(x);  // Apply the fixed-point iteration formula
     (*itr)++;  // Increment iteration count
@@ -22,8 +24,10 @@ int main() {
     int max_itr, itr = 0;
 
     // Get input from the user
-    printf("Enter the initial guess: \n");
-    scanf("%f", &x0);
+    do {
+        printf("\nEnter initial approximations x1 & x2 such that f(x1)*f(x2)<0: ");
+        scanf("%f %f", &x0, &x1);
+    } while (f(x0) * f(x1) >= 0);  // Ensure f(x1) * f(x2) < 0 (sign change)
 
     printf("Enter allowed error: \n");
     scanf("%f", &allowed_error);
