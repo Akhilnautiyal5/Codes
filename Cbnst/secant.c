@@ -1,55 +1,52 @@
-#include<stdio.h>
-#include<math.h>
+// x2 = x1 - (f(x1) * (x1 - x0)) / (f(x1) - f(x0))
 
-// Function f(x) = x^3 - 4
-float f(float x) {
-    return (x * x * x - 4);
+#include <stdio.h>
+#include <math.h>
+
+float f(float x)
+{
+    return (x * x * x - 4 * x - 9);
 }
 
-int main() {
-    float a, b, c, e;
-    int count = 1, n;
+float secant(float x0, float x1, int *itr)
+{
+    float x2 = x1 - (f(x1) * (x1 - x0)) / (f(x1) - f(x0));
+    (*itr)++;
+    printf("at iteration %d value of x is: %f\n", *itr, x2);
+    return x2;
+}
 
-    // Input the initial guesses for a and b
-    printf("Enter the values of a and b (initial guesses):\n");
-    scanf("%f %f", &a, &b);
+int main()
+{
+    float x0, x1, x2, allerr;
+    int itr = 0, maxitr;
 
-    // Input the allowed error and maximum number of iterations
-    printf("Enter the values of allowed error and maximum number of iterations:\n");
-    scanf("%f %d", &e, &n);
+    printf("Enter the first two assumptions a, b: \n");
+    scanf("%f %f", &x0, &x1);
 
-    if((f(a) == f(b))) { // Prevent division by zero
-        printf("Solution cannot be found as f(a) and f(b) are too close.\n");
-        return 1;
-    }
+    printf("Enter allowed error: \n");
+    scanf("%f", &allerr);
 
-    // Implementing the Secant method
-    do {
-        // Calculate the new point c
-        c = (a * f(b) - b * f(a)) / (f(b) - f(a));
+    printf("Enter allowed max iterration: \n");
+    scanf("%d", &maxitr);
 
-        // Print the current iteration result
-        printf("Iteration No-%d    x = %f\n", count, c);
+    x2 = secant(x0, x1, &itr);
 
-        // Check if the error is within the allowed limit
-        if(fabs(f(c)) < e) {
-            printf("\nThe required solution is %f\n", c);
+    do
+    {
+        x0 = x1;
+        x1 = x2;
+        x2 = secant(x0, x1, &itr);
+
+        if (fabs(x2 - x1) < allerr)
+        {
+            printf("\nRoot found after %d iterations\n", itr);
+            printf("Root = %f\n", x2);
+            printf("Function value at root = %f\n", f(x2));
             return 0;
         }
 
-        // Update a and b for the next iteration
-        a = b;
-        b = c;
-        count++;
-
-        // Check if maximum number of iterations is reached
-        if(count > n) {
-            printf("Maximum number of iterations reached. Solution may not have converged.\n");
-            return 1;
-        }
-
-    } while(fabs(f(c)) > e);
-
-    printf("\nThe required solution is %f\n", c);
+    } while (itr < maxitr);
+    printf("Max iteration reached!\n");
     return 0;
 }
