@@ -11,7 +11,7 @@ void calculateForwardDiff(float x[], float y[], float forwardDiffArr[][MAX_POINT
     }
 
     // Filling the forward difference table
-    for (int j = 1; j < n; j++) {
+   for (int j = 1; j < n; j++) {
         for (int i = 0; i < n - j; i++) {
             forwardDiffArr[i][j] = forwardDiffArr[i + 1][j - 1] - forwardDiffArr[i][j - 1];
         }
