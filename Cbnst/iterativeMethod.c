@@ -1,59 +1,51 @@
-#include <stdio.h>
-#include <math.h>
+#include<stdio.h>
+#include<math.h>
 
-// Function g(x) for the iteration, rewritten form of f(x) = x^3 - 4x - 9
-float g(float x) {
-    return cbrt(4 * x + 9);  // g(x) = ∛(4x + 9)
-}
+#define f(x) (x*x*x - 4*x - 9)            // Original function f(x) = x^3 - 4x - 9
+#define g(x) (pow((4*x + 9), 1/3.0))      // Fixed-point transformation g(x) = ∛(4x + 9)
+#define dg(x) (4/3.0 * pow((4*x + 9), -2/3.0))  // Derivative of g(x), g'(x)
 
-// Function f(x) = x^3 - 4x - 9
-float f(float x) {
-    return (x * x * x - 4 * x - 9);  // Original function
-}
+int main(void) {
+    printf("\nIterative Method\n");
+    float a, b, err;
 
-// Fixed-point iteration step
-float fixed_point_iteration(float x, int *itr) {
-    float x_next = g(x);  // Apply the fixed-point iteration formula
-    (*itr)++;  // Increment iteration count
-    printf("At iteration %d, value of x is: %f\n", *itr, x_next);
-    return x_next;
-}
-
-int main() {
-    float x0, x1, allowed_error;
-    int max_itr, itr = 0;
-
-    // Get input from the user
+    // Step 1: Input two initial approximations a & b such that f(a)*f(b) < 0
     do {
-        printf("\nEnter initial approximations x1 & x2 such that f(x1)*f(x2)<0: ");
-        scanf("%f %f", &x0, &x1);
-    } while (f(x0) * f(x1) >= 0);  // Ensure f(x1) * f(x2) < 0 (sign change)
+        printf("\nEnter initial approximation a & b: ");
+        scanf("%f %f", &a, &b);
+    } while (f(a) * f(b) >= 0);  // Ensure sign change between f(a) and f(b)
 
-    printf("Enter allowed error: \n");
-    scanf("%f", &allowed_error);
+    // Step 2: Check the derivative condition
+    if (fabs(dg(a)) < 1 && fabs(dg(b)) < 1)
+        printf("\nFunction is correct and converges.\n");
+    else {
+        printf("\nFunction does not converge.\n");
+        return 1;  // Exit if the function does not converge
+    }
 
-    printf("Enter the maximum number of iterations: \n");
-    scanf("%d", &max_itr);
+    // Step 3: Input the acceptable error
+    printf("\nEnter acceptable error: ");
+    scanf("%f", &err);
 
-    // Perform the first iteration
-    x1 = fixed_point_iteration(x0, &itr);
+    float x0, x1;
+    // Step 4: Determine initial guess x0 based on which f(x) value is smaller
+    if (fabs(f(a)) < fabs(f(b)))
+        x1 = a;  // Use a if f(a) is smaller
+    else
+        x1 = b;  // Otherwise, use b
 
-    // Fixed-point iteration loop
+    int count = 0;
+
+    // Step 5: Fixed-point iteration process
     do {
-        x0 = x1;  // Update x0 with the latest value
-        x1 = fixed_point_iteration(x0, &itr);
+        count++;
+        x0 = x1;  // Set the current guess to x0
+        x1 = g(x0);  // Compute the next approximation using g(x)
+        printf("\nIteration %d: x%d = %f", count, count, x1);
+    } while (fabs(x1 - x0) >= err);  // Continue until the error is within the allowed tolerance
 
-        // Check if the error is within the allowed tolerance
-        if (fabs(x1 - x0) < allowed_error) {
-            printf("\nRoot found after %d iterations\n", itr);
-            printf("Root = %f\n", x1);
-            printf("Function value at root = %f\n", f(x1));
-            return 0;
-        }
+    // Step 6: Output the root after convergence
+    printf("\nRoot of the equation = %f \nafter %d Iterations\n", x1, count);
 
-    } while (itr < max_itr);
-
-    // If maximum iterations reached
-    printf("Max iterations reached!\n");
     return 0;
 }
