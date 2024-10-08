@@ -16,7 +16,7 @@ int main(void) {
     } while (f(a) * f(b) >= 0);  // Ensure sign change between f(a) and f(b)
 
     // Step 2: Check the derivative condition
-    if (fabs(dg(a)) < 1 && fabs(dg(b)) < 1)
+    if (fabs(dg(a)) < 1 && fabs(dg(b)) < 1){
         printf("\nFunction is correct and converges.\n");
         // Step 3: Input the acceptable error
         printf("\nEnter acceptable error: ");
@@ -43,6 +43,7 @@ int main(void) {
         printf("\nRoot of the equation = %f \nafter %d Iterations\n", x1, count);
     
         return 0;
+    }
     else {
         printf("\nFunction does not converge.\n");
         return 1;  // Exit if the function does not converge
