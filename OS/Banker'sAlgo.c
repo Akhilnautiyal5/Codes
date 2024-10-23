@@ -50,27 +50,6 @@ int main()
         }
     }
 
-    for (int k = 0; k < P; k++) {
-        for (int i = 0; i < P; i++) {
-            if (finish[i] == 0) {
-                int flag = 0;
-                for (int j = 0; j < R; j++) {
-                    if (need[i][j] > avail[i]) {
-                        flag = 1;
-                        break;
-                    }
-                }
-                if (flag == 0){
-                    for (int y = 0; y < R; y++) {
-                        avail[i] += alloc[i][y];
-                    }
-                    safeSeq[count++] = i;
-                    finish[i] = 1;
-                }
-            }
-        }
-    }
-
         // Output safe sequence
         printf("Request can be fulfilled\nSafe Sequence: ");
     for (int i = 0; i < P; i++)
