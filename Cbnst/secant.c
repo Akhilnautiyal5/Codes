@@ -1,52 +1,26 @@
-// x2 = x1 - (f(x1) * (x1 - x0)) / (f(x1) - f(x0))
+#include<stdio.h>
+#include<math.h>
 
-#include <stdio.h>
-#include <math.h>
+#define f(x) ( x*x*x - 5*x + 1)
+#define bisect(x1, x2) ((x1+x2)/2)
+#define regula(x1, x2) ((x1 * f(x2) - x2 * f(x1)) / (f(x2) - f(x1)))
+#define secant(x1, x2) ((x1 * f(x2) - x2 * f(x1)) / (f(x2) - f(x1)))
 
-float f(float x)
-{
-    return (x * x * x - 4 * x - 9);
-}
-
-float secant(float x0, float x1, int *itr)
-{
-    float x2 = x1 - (f(x1) * (x1 - x0)) / (f(x1) - f(x0));
-    (*itr)++;
-    printf("at iteration %d value of x is: %f\n", *itr, x2);
-    return x2;
-}
-
-int main()
-{
-    float x0, x1, x2, allerr;
-    int itr = 0, maxitr;
-
-    printf("Enter the first two assumptions a, b: \n");
-    scanf("%f %f", &x0, &x1);
-
-    printf("Enter allowed error: \n");
-    scanf("%f", &allerr);
-
-    printf("Enter allowed max iterration: \n");
-    scanf("%d", &maxitr);
-
-    x2 = secant(x0, x1, &itr);
-
-    do
-    {
-        x0 = x1;
-        x1 = x2;
-        x2 = secant(x0, x1, &itr);
-
-        if (fabs(x2 - x1) < allerr)
-        {
-            printf("\nRoot found after %d iterations\n", itr);
-            printf("Root = %f\n", x2);
-            printf("Function value at root = %f\n", f(x2));
-            return 0;
-        }
-
-    } while (itr < maxitr);
-    printf("Max iteration reached!\n");
-    return 0;
+int main() {
+  int maxitr = 20;
+  float epsilon = 0.001;
+  float x1 = 0, x2 = 1;
+  int i = 0;
+  float x = secant(x1, x2);
+  while (i <= maxitr) {
+   x1 = x2;
+    x2 = x;
+    x = secant(x1, x2);
+    if (fabs(x - x2) < epsilon) {
+      printf("total iteration = %d, root = %f\n", i+1, x);
+      return 0;
+    }
+    printf("iteration = %d, root = %f\n", i+1, x);
+    i++;
+  }
 }
