@@ -1,51 +1,34 @@
 #include<stdio.h>
 #include<math.h>
 
-float func(float x) {
-    return (x*x *x - 4*x - 9);
-}
-void regula_falsi(float *x, float a, float b, int *iter) {
-    *x = (a * func(b) - b * func(a)) / (func(b) - func(a));
-    ++(*iter);
-    printf("x in no of iteeration %d is %f\n", *iter, *x);
-}
+#define f(x) ( x*x*x - 2*x - 5)
+#define bisect(x1, x2) ((x1+x2)/2)
+#define regula(x1, x2) ((x1 * f(x2) - x2 * f(x1)) / (f(x2) - f(x1)))
+#define secant(x1, x2) ((x1 * f(x2) - x2 * f(x1)) / (f(x2) - f(x1)))
 
 int main() {
-    int iter = 0, maxIter;
-    float x, a, b, allerr, x1;
-    printf("Enter the first two assumptions a, b: \n");
-    scanf("%f %f", &a, &b);
-
-    if (func(a) * func(b) >= 0) {
-        printf("Function has the same signs at a and b. The bisection method cannot proceed.\n");
-
-        printf("Re-Enter the first two assumptions a, b: \n");
-        scanf("%f %f", &a, &b);
-        return -1;
+  int maxitr = 20;
+  float epsilon = 0.0001;
+  float x1 = 2, x2 = 3;
+    if (f(x1)*f(x2) >0 ) {
+         printf("invalid root range");
+        return 0;
     }
-
-    printf("Enter allowed error: \n");
-    scanf("%f", &allerr);
-
-    printf("Enter allowed max iterations: \n");
-    scanf("%d", &maxIter);
-
-    regula_falsi(&x, a, b, &iter);
-
-    x1 = x;
-    do {
-        if (func(a) * func(x) < 0)
-            b = x;
-        else
-            a = x;
-        regula_falsi(&x, a, b, &iter);
-        if (fabs(x-x1) <= allerr) {
-            printf("value of x at iteration %d i = %f\n", iter, x1);
-            return 0;
-        }
-        x1 = x;
-    } while (iter);
-
-    printf("Maximum number of iterations reached.\n");
-    return 1;
+  int i = 1;
+  float x = regula(x1, x2);
+  while (i <= maxitr) {
+    if (f(x)*f(x1) < 0) {
+      x2 = x;
+    } else {
+      x1 = x;
+    }
+    float x3 = regula(x1, x2);
+    if (fabs(x3 - x) < epsilon) {
+      printf("total iteration = %d, root = %f\n", i, x);
+      return 0;
+    }
+    x = x3;
+    printf("iteration = %d, root = %f\n", i, x);
+    i++;
+  }
 }
