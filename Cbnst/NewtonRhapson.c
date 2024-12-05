@@ -1,57 +1,24 @@
 #include<stdio.h>
 #include<math.h>
 
-// Define the function f(x)
-float f(float x) {
-    return (x * x * x - 4 * x - 9);  // Example function: f(x) = x^3 - 4x - 9
-}
-
-// Define the derivative f'(x)
-float f_prime(float x) {
-    return (3 * x * x - 4);  // Derivative of f(x): f'(x) = 3x^2 - 4
-}
-
-// Newton-Raphson iteration function
-float newton_raphson(float x, int *itr) {
-    float x_next = x - f(x) / f_prime(x);  // Apply the Newton-Raphson formula
-    (*itr)++;  // Increment the iteration counter
-    printf("At iteration %d, value of x is: %f\n", *itr, x_next);
-    return x_next;
-}
+#define f(x) (x*x*x - 3*x - 5)
+#define dx(x) (3*x*x - 3)
+#define raphson(x) (x - f(x)/dx(x))
 
 int main() {
-    float x0, x1, allowed_error;
-    int max_itr, itr = 0;
-
-    // Get input from the user
-    printf("Enter the initial guess: \n");
-    scanf("%f", &x0);
-
-    printf("Enter allowed error: \n");
-    scanf("%f", &allowed_error);
-
-    printf("Enter the maximum number of iterations: \n");
-    scanf("%d", &max_itr);
-
-    // Perform the first iteration
-    x1 = newton_raphson(x0, &itr);
-
-    // Newton-Raphson loop
-    do {
-        x0 = x1;  // Update x0 with the latest value
-        x1 = newton_raphson(x0, &itr);  // Perform the next iteration
-
-        // Check if the error is within the allowed tolerance
-        if (fabs(x1 - x0) < allowed_error) {
-            printf("\nRoot found after %d iterations\n", itr);
-            printf("Root = %f\n", x1);
-            printf("Function value at root = %f\n", f(x1));
-            return 0;
-        }
-
-    } while (itr < max_itr);
-
-    // If maximum iterations reached
-    printf("Max iterations reached!\n");
-    return 0;
+  int maxitr = 20;
+  float x1 = 2, x2 = 3;
+  float x = (x1+x2)/2;
+  float x3;
+  int i = 1;
+  while (i <= maxitr) {
+    x3 = raphson(x);
+    if (fabs(x3-x) < 0.0001) {
+      printf("iteration = %d, root = %f\n", i, x);
+      return 0;
+    }
+    printf("iteration = %d, root = %f\n", i, x);
+    x = x3;
+    i++;
+  }
 }
